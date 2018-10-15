@@ -1,6 +1,6 @@
 {
   "name": "webpack-react-typescript-boilderplate",
-  "version": "1.0.",
+  "version": "1.0",
   "description": "Boilerplate to setup a web project with Webpack, React, Typescript and CSS-Modules",
   "main": "index.js",
   "scripts": {
