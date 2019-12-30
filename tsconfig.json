@@ -1,29 +1,25 @@
 {
-  "version": "2.8.3",
   "compilerOptions": {
-    "outDir": "dist",
-    "target": "es6",
+    "outDir": "dist/",
     "module": "esnext",
+    "target": "es5",
     "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "sourceMap": true,
-    "jsx": "preserve",
-    "lib": [
-      "es2017",
-      "dom"
-    ],
     "baseUrl": ".",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "downlevelIteration": true,
     "paths": {
-      "styles/*": [
-        "src/styles/*"
-      ],
-      "assets/*": [
-        "src/assets/*"
-      ]
-    }
+      "assets/*": ["assets/*"],
+      "styles/*": ["src/styles/*"]
+    },
+    "lib": ["dom", "es2015", "es2016", "es2017", "esnext"],
+    "types": ["jest", "node", "styled-components/cssprop"]
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules", "dist"]
 }

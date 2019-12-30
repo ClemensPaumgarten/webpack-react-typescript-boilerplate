@@ -1,76 +1,115 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
+const ForkTypeScriptCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
   entry: path.resolve(__dirname, 'src/index'),
   output: {
+    filename: 'bundle.[chunkhash:4].js',
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.[chunkhash:4].js'
+    publicPath: '/',
   },
 
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        exclude: /node_modules/,
         use: [
           {
-            loader: 'babel-loader'
+            loader: 'babel-loader',
+            options: {
+              plugins: ['babel-plugin-styled-components'],
+              presets: [
+                '@babel/preset-react',
+                '@babel/preset-typescript',
+                [
+                  '@babel/preset-env',
+                  {
+                    useBuiltIns: 'usage',
+                    corejs: 3,
+                    targets: 'ie 11, not dead, safari > 9',
+                  },
+                ],
+              ],
+            },
           },
-          {
-            loader: 'ts-loader'
-          }
-        ]
+        ],
       },
       {
         test: /\.svg$/,
-        loader: 'svg-react-loader',
-        options: {
-          classIdPrefix: '[name]-[hash:8]__',
-          propsMap: {
-            fillRule: 'fill-rule',
-            foo: 'bar'
+        use: [
+          {
+            loader: '@svgr/webpack',
+            options: {
+              dimensions: true,
+              replaceAttrValues: {
+                '#ff00ff': 'currentColor',
+                '#f0f': 'currentColor',
+              },
+            },
           },
-          xmlnsTest: /^xmlns.*$/
-        }
+        ],
       },
       {
-        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000
-        },
-      }
-    ]
+        test: /\.(png|jpg|)$/,
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+          },
+        }]
+      },
+      {
+        test: /\.(css|scss)$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              // you can specify a publicPath here
+              // by default it uses publicPath in webpackOptions.output
+              publicPath: '../',
+              hmr: process.env.NODE_ENV === 'development',
+            },
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+            },
+          },
+        ],
+      },
+    ],
   },
 
   plugins: [
+    new ForkTypeScriptCheckerWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'src/index.html'),
-      minify: true
+      template: path.resolve(__dirname, 'assets/index.html'),
+      minify: true,
     }),
-    new ExtractTextPlugin({
-      filename: 'styles.[chunkhash:4].css'
-    })
-
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // all options are optional
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+      ignoreOrder: false, // Ena
+    }),
   ],
 
   resolve: {
-    extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
-    plugins: [
-      new TsconfigPathsPlugin()
-
-    ]
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    plugins: [new TsconfigPathsPlugin()],
   },
 
   stats: {
     children: false,
     chunks: false,
     modules: false,
-    exclude: [ 'node_modules' ]
+    exclude: ['node_modules'],
   },
 
-  cache: true
-};
+  cache: true,
+}

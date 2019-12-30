@@ -1,13 +1,24 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React, { FunctionComponent } from 'react'
+import { render } from 'react-dom'
+import styled from 'styled-components'
 
-import styles from 'styles/main.scss'
 import 'styles/global.scss'
 
-const Main = () => (
-  <div className={styles.container}>
-    <h1>Let's go!</h1>
-  </div>
+const Container = styled.div`
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+`
+
+const Application: FunctionComponent = () => (
+  <Container>
+    <span>
+      Frontend project boilerplate with&nbsp;
+      <a href='https://reactjs.org/' target='_blank'>react</a>, <a href='https://www.styled-components.com/' target='_blank'>styled-components</a> and <a href='https://webpack.js.org/' target='_blank'>webpack</a>
+    </span>
+  </Container>
 )
 
-ReactDOM.render(<Main />, document.getElementById('mount'))
+render(<Application />, document.getElementById('mount'))
